@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "a4845d9a-bce9-4ae0-a37b-d48cfce7fb7a",
+      "name": "telefonos_asset"
+    },
+    "batch_definition": {
+      "id": "6b480e50-f156-4328-bf1a-6af8a9d0f656",
+      "name": "full_table_batch"
+    },
+    "datasource": {
+      "id": "b3b82737-77ac-4c91-bc13-e5869413a8ea",
+      "name": "spark_datasource"
+    }
+  },
+  "id": "b27f03ae-e178-4c6b-b1c9-04fa84f8a862",
+  "name": "telefonos_asset",
+  "suite": {
+    "id": "a10877da-6fed-4b34-96c2-452966fa8cba",
+    "name": "telefonos_asset"
+  }
+}
