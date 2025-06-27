@@ -1,0 +1,6 @@
+Estado,Expectativa,Descripción,Recuento Inesperados,Porcentaje Inesperado,Total de Filas
+Estadísticas Generales,,"Total de validaciones: 4, Exitosas: 4, Fallidas: 0, Porcentaje de éxito: 100.0%",,,50
+Éxito,Expectativas de Referencia de Caracteres,"Verifica que los valores de `telefono` comiencen con uno de los prefijos válidos: 348, 368, 369, 335, 394, 366, 333, 382, 301, 305, 373, 345, 341, 377, 325, 327, 349, 393, 354, 324, 359, 309, 395, 313, 306, 303, 388, 302, 314, 397, 389, 399, 339, 353, 396, 308, 318, 362, 322, 315, 326, 329.",0,0.0,50
+Éxito,Expectativas de Valores No Nulos,Verifica que los valores de `telefono` no sean nulos.,0,0.0,50
+Éxito,Expectativas de Longitud de Valores,Verifica que la longitud de los valores de `telefono` esté entre 1 y 10.,0,0.0,50
+Éxito,Expectativas de Longitud de Valores,Verifica que la longitud de los valores de `telefono` sea exactamente 10.,0,0.0,50

@@ -2,7 +2,7 @@
   "expectations": [
     {
       "description": "Verifica que los valores de `id_cliente` sean \u00fanicos.",
-      "id": "bfb90e70-6557-402a-b9a4-4c3b597b9c5a",
+      "id": "f3bb44b2-5a0f-4d15-a2fe-71a0cd5737f9",
       "kwargs": {
         "column": "id_cliente"
       },
@@ -14,7 +14,7 @@
     },
     {
       "description": "Verifica que los valores de la columna `cod_municipio` est\u00e9n en la lista de referencia.",
-      "id": "37c08a6a-1029-40d9-bcb7-e3109cf04fb7",
+      "id": "da30f591-f2b3-4b78-8ab3-d9d011c47e11",
       "kwargs": {
         "column": "cod_municipio",
         "value_set": [
@@ -37,7 +37,7 @@
     },
     {
       "description": "Verifica que los valores de la columna `ciudad` est\u00e9n en la lista de referencia.",
-      "id": "127be660-0ef2-46a2-a0ba-1aedd0f99b8c",
+      "id": "60450884-e06e-4301-81c8-0d621667f93a",
       "kwargs": {
         "column": "ciudad",
         "value_set": [
@@ -60,7 +60,7 @@
     },
     {
       "description": "Verifica que los valores de `email` coincidan con el patr\u00f3n `^.*@.*\\.com$`.",
-      "id": "71c838e8-b57a-41d8-9c07-78c61f8dc62f",
+      "id": "39349604-0333-4acc-a05a-802ba3c41d68",
       "kwargs": {
         "column": "email",
         "regex": "^.*@.*\\.com$"
@@ -73,7 +73,7 @@
     },
     {
       "description": "Verifica que los valores de `email` comiencen con uno de los prefijos v\u00e1lidos: user.",
-      "id": "6ea2c972-a3e8-44d3-9dab-fef6eea545c8",
+      "id": "36147959-e1ad-4eb4-bf60-77fde8d631f3",
       "kwargs": {
         "column": "email",
         "regex": "^(user)"
@@ -86,7 +86,7 @@
     },
     {
       "description": "Verifica que las combinaciones de columnas email, ciudad est\u00e9n en la lista de valores permitidos",
-      "id": "9db4b76e-32a1-49f3-a174-cd755dfe06ff",
+      "id": "4e4472e3-a34c-4e76-8622-8970078def2d",
       "kwargs": {
         "unexpected_rows_query": "\n    SELECT *\n    FROM {batch} AS t\n    WHERE concat_ws('|', email, ciudad) NOT IN ('user1@example.com|Ciudad15', 'user32@example.com|Ciudad2', 'user3@example.com|Ciudad3', 'user4@example.com|Ciudad4', 'user5@example.com|Ciudad5', 'user6@example.com|Ciudad6', 'user31@example.com|Ciudad7', 'user8@example.com|Ciudad8', 'user9@example.com|Ciudad9')"
       },
