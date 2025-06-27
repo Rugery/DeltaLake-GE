@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "a62cd583-a8b9-471f-a7cb-99456b3e0008",
+      "name": "clientes"
+    },
+    "batch_definition": {
+      "id": "85f86be2-7a7e-4125-b52e-9aa07ebce8b8",
+      "name": "full_table_batch"
+    },
+    "datasource": {
+      "id": "3750b7ba-0a93-439d-bae4-502caa07314c",
+      "name": "spark_datasource"
+    }
+  },
+  "id": "5a6685ff-d3e3-41b9-95bd-e0f0af86007e",
+  "name": "suite_clientes",
+  "suite": {
+    "id": "6209d90d-cf81-42fe-bed1-29009aef52ac",
+    "name": "suite_clientes"
+  }
+}
