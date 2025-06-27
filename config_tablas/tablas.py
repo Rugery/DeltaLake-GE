@@ -1,5 +1,5 @@
-from expectations.expectativas_clientes import suite_Clientes
-from expectations.expectativas_telefono import suite_Telefonos
+from expectativas.expectativas_clientes import suite_Clientes
+from expectativas.expectativas_telefono import suite_Telefonos
 
 
 tables_config = [

@@ -1,7 +1,7 @@
 import great_expectations as ge
 import pandas as pd
 
-from expectations.expectativas_comunes import (
+from expectativas.expectativas_comunes import (
     expectativa_valores_longitud_igual, 
     expectativa_valores_longitud_entre, 
     expectativa_valores_no_nullos, 

@@ -83,23 +83,23 @@ data_docs_sites:
 fluent_datasources:
   spark_datasource:
     type: spark
-    id: 3750b7ba-0a93-439d-bae4-502caa07314c
+    id: 5fb69b7a-9e22-4b65-aee8-0405850640dc
     assets:
       clientes:
         type: dataframe
-        id: a62cd583-a8b9-471f-a7cb-99456b3e0008
+        id: 530702cf-21f9-4f2d-b842-ebfe56923c82
         batch_metadata: {}
         batch_definitions:
           full_table_batch:
-            id: 85f86be2-7a7e-4125-b52e-9aa07ebce8b8
+            id: 8edb9548-591f-4f3e-b71b-2c8eeb1b62be
             partitioner:
       telefonos:
         type: dataframe
-        id: b6dd3fa9-7cbe-4966-8670-76262c1d55ea
+        id: 693d5d24-2be7-4a30-ab44-9de55aad953f
         batch_metadata: {}
         batch_definitions:
           full_table_batch:
-            id: ddb4dd01-28a2-4062-a2b6-99d103219a65
+            id: de3eeb64-a604-4a3c-b0f4-bf6ad7ac4fd9
             partitioner:
 analytics_enabled:
-data_context_id: 04308775-ec8a-4146-a47e-524cb79d13af
+data_context_id: 3bcfeab7-0443-4a94-9fe4-fb6ff635fbec

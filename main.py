@@ -9,7 +9,7 @@ from ge_logic.indicadores import generar_indicadores
 from ge_logic.cuarentena import procesar_filas_fallidas
 from ge_logic.suite import create_or_update_suite
 from ge_logic.validation import create_validation_definition
-from config.tables import tables_config
+from config_tablas.tablas import tables_config
 from ge_logic.helpers import (
     get_or_create_datasource,
     get_or_create_asset,

@@ -6,14 +6,14 @@
       "type": "update_data_docs"
     }
   ],
-  "id": "ca905f23-c6df-42e7-9823-6f1587ca0ce7",
+  "id": "4b81e088-a909-4f48-8c1e-c65c9f0d9465",
   "name": "checkpoint_suite_telefonos",
   "result_format": {
     "result_format": "COMPLETE"
   },
   "validation_definitions": [
     {
-      "id": "51b6c3e1-c169-4377-95ff-43f461e6c57b",
+      "id": "8db158c8-a277-4cf9-9dbb-bd45660aa68f",
       "name": "suite_telefonos"
     }
   ]
