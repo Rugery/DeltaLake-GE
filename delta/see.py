@@ -13,7 +13,7 @@ spark = configure_spark_with_delta_pip(builder).getOrCreate()
 
 # Calcular ruta relativa basada en la ubicación de este script
 current_dir = os.path.dirname(os.path.abspath(__file__))
-delta_path = os.path.join(current_dir, "../delta-tables/clientes")
+delta_path = os.path.join(current_dir, "../delta-tables/telefonos")
 
 df = spark.read.format("delta").load(delta_path)
 df.show()

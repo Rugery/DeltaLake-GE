@@ -7,6 +7,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def generar_indicadores(result_dict, table_name=None):
+    """
+    Genera un CSV con indicadores de validación para una tabla.
+
+    Parámetros:
+        result_dict: Diccionario de resultados de validación (run_results).
+        table_name: Nombre de la tabla (opcional).
+
+    Retorna:
+        Diccionario con indicadores principales.
+    """
     raiz_proyecto = Path.cwd()
     carpeta_indicadores = raiz_proyecto / 'resultados' / 'indicadores'
 
@@ -21,6 +31,7 @@ def generar_indicadores(result_dict, table_name=None):
 
     indicadores = {}
 
+    # Toma el primer resultado de validación
     validation_key = next(iter(result_dict))
     validation_data = result_dict[validation_key]
 
@@ -28,11 +39,13 @@ def generar_indicadores(result_dict, table_name=None):
         logger.warning("No se encuentra 'results' en el diccionario.")
         return indicadores
 
+    # Indicadores generales
     total_validaciones = validation_data['statistics']['evaluated_expectations']
     validaciones_exitosas = validation_data['statistics']['successful_expectations']
     validaciones_fallidas = validation_data['statistics']['unsuccessful_expectations']
     porcentaje_exito = validation_data['statistics']['success_percent']
 
+    # Busca el número de filas validadas
     element_count = 0
     for result in validation_data['results']:
         if 'element_count' in result['result']:
@@ -54,6 +67,7 @@ def generar_indicadores(result_dict, table_name=None):
 
             writer.writeheader()
 
+            # Escribe resumen general
             writer.writerow({
                 'Estado': 'Estadísticas Generales',
                 'Expectativa': '',
@@ -63,6 +77,7 @@ def generar_indicadores(result_dict, table_name=None):
                 'Total de Filas': element_count
             })
 
+            # Escribe detalle por expectativa
             for result in validation_data['results']:
                 expectation = result['expectation_config']
                 success = result['success']

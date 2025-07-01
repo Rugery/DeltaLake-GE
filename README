@@ -1,0 +1,47 @@
+# DeltaLake GE - Validación de Calidad de Datos con Spark y Great Expectations
+
+Este proyecto permite validar la calidad de datos en tablas Delta Lake usando PySpark y Great Expectations, generando indicadores y cuarentena de filas fallidas.
+
+## Estructura principal
+
+- **main.py**: Orquestador principal. Lee tablas Delta, ejecuta validaciones, genera indicadores y cuarentena.
+- **ge_logic/**: Lógica modular para checkpoints, indicadores, cuarentena, helpers y suites.
+- **config_tablas/tablas.py**: Configuración de tablas y sus expectativas.
+- **expectativas/**: Definición de expectativas (reglas de calidad) para cada tabla.
+
+## ¿Qué hace el flujo?
+
+1. **Carga cada tabla Delta** definida en `config_tablas/tablas.py`.
+2. **Aplica las expectativas** (reglas de calidad) correspondientes.
+3. **Ejecuta la validación** con Great Expectations.
+4. **Genera indicadores** de validación en CSV (por tabla).
+5. **Guarda filas fallidas** (cuarentena) en CSV.
+6. **Genera documentación HTML** de los resultados.
+
+## ¿Cómo ejecutar?
+
+1. Instala dependencias:
+    ```bash
+    pip install pyspark delta-spark great_expectations pandas openpyxl
+    ```
+2. Asegúrate de tener tus tablas Delta en las rutas configuradas.
+3. Ejecuta el script principal:
+    ```bash
+    python main.py
+    ```
+
+## Salidas
+
+- **resultados/indicadores/**: CSV con indicadores de validación por tabla.
+- **resultados/cuarentena/**: CSV con filas que no cumplen las reglas.
+- **resultados/ge_documentation/**: Documentación HTML de los resultados.
+
+## Personalización
+
+- Modifica o agrega expectativas en la carpeta `expectativas/`.
+- Cambia la configuración de tablas en `config_tablas/tablas.py`.
+
+---
+
+**Autor:**  
+Proyecto automatizado con PySpark, Delta Lake y Great Expectations.

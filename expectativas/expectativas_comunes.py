@@ -1,6 +1,22 @@
 import great_expectations as ge
 
-def expectativa_valores_por_referencia_caracteres(columna=None, referencia=None,caracteres=None):
+# =========================
+# Expectativas Comunes GE
+# =========================
+
+def expectativa_valores_por_referencia_caracteres(columna=None, referencia=None, caracteres=None):
+    """
+    Espera que los valores de una columna comiencen con ciertos caracteres (prefijos) válidos,
+    extraídos de una referencia.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        referencia: DataFrame de referencia con los valores válidos.
+        caracteres: Número de caracteres a tomar como prefijo.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex.
+    """
     ref = referencia[columna].dropna().unique().tolist()
     prefijos_cortos = list({str(p)[:caracteres] for p in ref})
     regex_pattern = f"^({'|'.join(prefijos_cortos)})"
@@ -15,6 +31,15 @@ def expectativa_valores_por_referencia_caracteres(columna=None, referencia=None,
     )
 
 def expectativa_valor_unico(columna=None):
+    """
+    Espera que todos los valores de la columna sean únicos.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToBeUnique.
+    """
     return ge.expectations.ExpectColumnValuesToBeUnique(
         column=columna,
         meta={
@@ -25,6 +50,16 @@ def expectativa_valor_unico(columna=None):
     )
 
 def expectativa_valores_por_referencia(columna, referencia):
+    """
+    Espera que los valores de la columna estén en una lista de referencia.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        referencia: DataFrame de referencia con los valores válidos.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToBeInSet.
+    """
     ref_cod = referencia[columna].dropna().unique().tolist()
     return ge.expectations.ExpectColumnValuesToBeInSet(
         column=columna,
@@ -37,6 +72,16 @@ def expectativa_valores_por_referencia(columna, referencia):
     )
 
 def expectativa_valores_con_patron(columna=None, patron=None):
+    """
+    Espera que los valores de la columna coincidan con un patrón regex.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        patron: Expresión regular a cumplir.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex.
+    """
     return ge.expectations.ExpectColumnValuesToMatchRegex(
         column=columna,
         regex=patron,
@@ -48,14 +93,24 @@ def expectativa_valores_con_patron(columna=None, patron=None):
     )
 
 def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separador="|"):
+    """
+    Espera que la combinación de valores de varias columnas esté en una tabla de equivalencias.
 
+    Parámetros:
+        columnas: Lista de nombres de columnas a validar.
+        tabla_equivalencia: DataFrame con las combinaciones válidas.
+        separador: Separador para concatenar los valores.
+
+    Retorna:
+        Expectation personalizada (UnexpectedRowsExpectation).
+    """
     # Crear la expresión SQL para concatenar columnas, ej: concat_ws('|', col1, col2, col3)
     columnas_concat = f"concat_ws('{separador}', {', '.join(columnas)})"
     tabla_equivalencia_tuplas = list(
-    tabla_equivalencia[columnas]
-    .dropna()
-    .drop_duplicates()
-    .itertuples(index=False, name=None)
+        tabla_equivalencia[columnas]
+        .dropna()
+        .drop_duplicates()
+        .itertuples(index=False, name=None)
     )
 
     # Concatenar cada tupla de valores permitidos usando el mismo separador y envolver en ''
@@ -83,6 +138,15 @@ def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separad
     )
 
 def expectativa_valores_no_nullos(columna=None):
+    """
+    Espera que los valores de la columna no sean nulos.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToNotBeNull.
+    """
     return ge.expectations.ExpectColumnValuesToNotBeNull(
         column=columna,
         meta={
@@ -92,7 +156,11 @@ def expectativa_valores_no_nullos(columna=None):
         description=f"Verifica que los valores de `{columna}` no sean nulos."
     )
 
-# def expectativa_valores_tipo(columna=None,tipo=None):
+# #Ejemplo de expectativa de tipo (comentada)
+# def expectativa_valores_tipo(columna=None, tipo=None):
+#     """
+#     Espera que los valores de la columna sean de un tipo específico.
+#     """
 #     return ge.expectations.ExpectColumnValuesToBeOfType(
 #         column=columna,
 #         type_=tipo,
@@ -104,18 +172,39 @@ def expectativa_valores_no_nullos(columna=None):
 #     )
 
 def expectativa_valores_longitud_entre(columna=None, min_valor=None, max_valor=None):
+    """
+    Espera que la longitud de los valores de la columna esté entre dos valores.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        min_valor: Longitud mínima.
+        max_valor: Longitud máxima.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValueLengthsToBeBetween.
+    """
     return ge.expectations.ExpectColumnValueLengthsToBeBetween(
-    column=columna,
-    min_value=min_valor,
-    max_value=max_valor,
-    meta={
-        "name": "Expectativas de Longitud de Valores",
-        "description": f"Verifica que la longitud de los valores de `{columna}` esté entre {min_valor} y {max_valor}."
-    },
-    description=f"Verifica que la longitud de los valores de `{columna}` esté entre {min_valor} y {max_valor}."
-)
+        column=columna,
+        min_value=min_valor,
+        max_value=max_valor,
+        meta={
+            "name": "Expectativas de Longitud de Valores",
+            "description": f"Verifica que la longitud de los valores de `{columna}` esté entre {min_valor} y {max_valor}."
+        },
+        description=f"Verifica que la longitud de los valores de `{columna}` esté entre {min_valor} y {max_valor}."
+    )
 
 def expectativa_valores_longitud_igual(columna=None, longitud=None):
+    """
+    Espera que la longitud de los valores de la columna sea igual a un valor específico.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        longitud: Longitud exacta requerida.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValueLengthsToEqual.
+    """
     return ge.expectations.ExpectColumnValueLengthsToEqual(
         column=columna,
         value=longitud,

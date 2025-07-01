@@ -9,9 +9,9 @@ from expectativas.expectativas_comunes import (
     expectativa_valores_tabla_equivalencia
 )
 
-archivo_referencias = "./ref_data/clientes/referencias_clientes.xlsx"
-archivo_equivalencias = "./ref_data/clientes/equivalencias_ciudad.xlsx"
-archivo_referencias_comunes =  "./ref_data/comun/municipio.xlsx"
+archivo_referencias = "./ref_datos/clientes/referencias_clientes.xlsx"
+archivo_equivalencias = "./ref_datos/clientes/equivalencias_ciudad.xlsx"
+archivo_referencias_comunes =  "./ref_datos/comun/municipio.xlsx"
 
 ref_Municipio = pd.read_excel(archivo_referencias_comunes, sheet_name="cod_municipio")
 ref_Ciudad = pd.read_excel(archivo_referencias, sheet_name="ciudad")

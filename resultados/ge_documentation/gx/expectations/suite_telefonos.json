@@ -1,21 +1,33 @@
 {
   "expectations": [
     {
-      "description": "Verifica que los valores de `telefono` comiencen con uno de los prefijos v\u00e1lidos: 301, 362, 326, 382, 353, 325, 388, 393, 333, 339, 389, 349, 369, 308, 324, 306, 368, 327, 345, 313, 373, 309, 318, 366, 315, 397, 377, 354, 396, 322, 399, 329, 305, 395, 394, 341, 335, 359, 314, 303, 302, 348.",
-      "id": "aa82debd-0763-4869-9e79-0e83beccd44e",
+      "description": "Verifica que los valores de `telefono` comiencen con uno de los prefijos v\u00e1lidos: 315, 373, 369, 395, 399, 313, 326, 314, 318, 389, 353, 359, 305, 366, 394, 396, 325, 301, 362, 345, 393, 377, 322, 302, 308, 397, 388, 349, 368, 327, 354, 382, 333, 339, 309, 329, 303, 341, 335, 324, 348, 306.",
+      "id": "9d42e669-a057-49ec-8571-5ca09ca50652",
       "kwargs": {
         "column": "telefono",
-        "regex": "^(301|362|326|382|353|325|388|393|333|339|389|349|369|308|324|306|368|327|345|313|373|309|318|366|315|397|377|354|396|322|399|329|305|395|394|341|335|359|314|303|302|348)"
+        "regex": "^(315|373|369|395|399|313|326|314|318|389|353|359|305|366|394|396|325|301|362|345|393|377|322|302|308|397|388|349|368|327|354|382|333|339|309|329|303|341|335|324|348|306)"
       },
       "meta": {
-        "description": "Verifica que los valores de `telefono` comiencen con uno de los prefijos v\u00e1lidos: 301, 362, 326, 382, 353, 325, 388, 393, 333, 339, 389, 349, 369, 308, 324, 306, 368, 327, 345, 313, 373, 309, 318, 366, 315, 397, 377, 354, 396, 322, 399, 329, 305, 395, 394, 341, 335, 359, 314, 303, 302, 348.",
+        "description": "Verifica que los valores de `telefono` comiencen con uno de los prefijos v\u00e1lidos: 315, 373, 369, 395, 399, 313, 326, 314, 318, 389, 353, 359, 305, 366, 394, 396, 325, 301, 362, 345, 393, 377, 322, 302, 308, 397, 388, 349, 368, 327, 354, 382, 333, 339, 309, 329, 303, 341, 335, 324, 348, 306.",
         "name": "Expectativas de Referencia de Caracteres"
       },
       "type": "expect_column_values_to_match_regex"
     },
     {
+      "description": "Verifica que los valores de `id` sean \u00fanicos.",
+      "id": "37a1377c-3080-4dca-9433-3ae79c703a25",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "description": "Verifica que los valores de `id` sean \u00fanicos.",
+        "name": "Expectativas valor \u00fanico"
+      },
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
       "description": "Verifica que los valores de `telefono` no sean nulos.",
-      "id": "7ab9ebfa-4382-4fab-bc15-c0388bf84c95",
+      "id": "9f5a9128-9366-4dff-9bff-ac02e39c6a6b",
       "kwargs": {
         "column": "telefono"
       },
@@ -27,7 +39,7 @@
     },
     {
       "description": "Verifica que la longitud de los valores de `telefono` est\u00e9 entre 1 y 10.",
-      "id": "05a2f004-5847-4466-baac-7c1715cdbbff",
+      "id": "6fa65015-7068-45fa-bdc5-f146ce7ef57d",
       "kwargs": {
         "column": "telefono",
         "max_value": 10,
@@ -41,7 +53,7 @@
     },
     {
       "description": "Verifica que la longitud de los valores de `telefono` sea exactamente 10.",
-      "id": "b023f6a0-200f-4cea-93ee-9bab39913867",
+      "id": "c288cfc6-9f63-4424-8a69-d7e2be6602bb",
       "kwargs": {
         "column": "telefono",
         "value": 10.0
@@ -53,7 +65,7 @@
       "type": "expect_column_value_lengths_to_equal"
     }
   ],
-  "id": "b855408a-1c30-47e3-9cde-a64ea4ac776d",
+  "id": "b35fcfa2-7fe9-48f0-9fd0-9a316372c91a",
   "meta": {
     "great_expectations_version": "1.5.0"
   },

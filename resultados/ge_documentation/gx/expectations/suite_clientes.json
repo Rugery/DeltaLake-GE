@@ -2,7 +2,7 @@
   "expectations": [
     {
       "description": "Verifica que los valores de `id_cliente` sean \u00fanicos.",
-      "id": "a1b4519e-34e4-48c6-9636-76276ebb09bd",
+      "id": "8f11d8de-2923-4eae-84a1-ff3dccb07aa7",
       "kwargs": {
         "column": "id_cliente"
       },
@@ -14,7 +14,7 @@
     },
     {
       "description": "Verifica que los valores de la columna `cod_municipio` est\u00e9n en la lista de referencia.",
-      "id": "7a31c29b-7d86-4fc6-b675-ad08b856fbee",
+      "id": "09cf4352-5ca3-4296-907b-af2c2988cd2b",
       "kwargs": {
         "column": "cod_municipio",
         "value_set": [
@@ -37,7 +37,7 @@
     },
     {
       "description": "Verifica que los valores de la columna `ciudad` est\u00e9n en la lista de referencia.",
-      "id": "4eb7bca1-8acf-44c6-9efe-cabb8e16a52c",
+      "id": "c43be0aa-10a0-4264-95da-dc8b1eefba13",
       "kwargs": {
         "column": "ciudad",
         "value_set": [
@@ -60,7 +60,7 @@
     },
     {
       "description": "Verifica que los valores de `email` coincidan con el patr\u00f3n `^.*@.*\\.com$`.",
-      "id": "2f3180a5-817b-478e-8243-36a1aa1c3da9",
+      "id": "5cfe32fa-3154-4f31-821c-3036ab15ef69",
       "kwargs": {
         "column": "email",
         "regex": "^.*@.*\\.com$"
@@ -73,7 +73,7 @@
     },
     {
       "description": "Verifica que los valores de `email` comiencen con uno de los prefijos v\u00e1lidos: user.",
-      "id": "ae9ea89a-506d-43bc-acea-4eb82b6f2c11",
+      "id": "1afc3a1a-a5e5-4901-b38e-1a7d6071eaac",
       "kwargs": {
         "column": "email",
         "regex": "^(user)"
@@ -86,7 +86,7 @@
     },
     {
       "description": "Verifica que las combinaciones de columnas email, ciudad est\u00e9n en la lista de valores permitidos",
-      "id": "2c6e06c3-6805-47ac-85c1-cf309c8249d5",
+      "id": "ab8c5ce2-d932-4ea2-9bda-c9b908973ff5",
       "kwargs": {
         "unexpected_rows_query": "\n    SELECT *\n    FROM {batch} AS t\n    WHERE concat_ws('|', email, ciudad) NOT IN ('user1@example.com|Ciudad15', 'user32@example.com|Ciudad2', 'user3@example.com|Ciudad3', 'user4@example.com|Ciudad4', 'user5@example.com|Ciudad5', 'user6@example.com|Ciudad6', 'user31@example.com|Ciudad7', 'user8@example.com|Ciudad8', 'user9@example.com|Ciudad9')"
       },
@@ -97,7 +97,7 @@
       "type": "unexpected_rows_expectation"
     }
   ],
-  "id": "35710e5d-9dc7-40c0-aa3b-c5aed5cca120",
+  "id": "64e84086-889b-45df-ae6f-7013ba9eef09",
   "meta": {
     "great_expectations_version": "1.5.0"
   },
