@@ -1,22 +1,22 @@
 {
   "data": {
     "asset": {
-      "id": "a874cc35-af0c-431f-afc3-ecb8ba85284c",
+      "id": "e8016f7d-9e04-4927-9f8d-b9ae8bdbfd21",
       "name": "clientes"
     },
     "batch_definition": {
-      "id": "0decdcc7-7d70-401e-b9ab-6c40df88ec9f",
+      "id": "a3474413-fc65-4499-be2a-00c9d1331f10",
       "name": "full_table_batch"
     },
     "datasource": {
-      "id": "9691a7db-6676-4ee9-bfd6-5e594561aeb8",
+      "id": "f2ea52ba-2124-4eba-8a21-f88d1c9177e9",
       "name": "spark_datasource"
     }
   },
-  "id": "a359ca6c-d74e-40a3-a12a-0d2fc4597e1c",
+  "id": "05605b75-7740-47f4-8d58-46b128addc1d",
   "name": "suite_clientes",
   "suite": {
-    "id": "64e84086-889b-45df-ae6f-7013ba9eef09",
+    "id": "d79435d4-ad3a-4eb8-84eb-27dd01a5e313",
     "name": "suite_clientes"
   }
 }

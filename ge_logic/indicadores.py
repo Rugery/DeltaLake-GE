@@ -7,16 +7,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def generar_indicadores(result_dict, table_name=None):
-    """
-    Genera un CSV con indicadores de validación para una tabla.
-
-    Parámetros:
-        result_dict: Diccionario de resultados de validación (run_results).
-        table_name: Nombre de la tabla (opcional).
-
-    Retorna:
-        Diccionario con indicadores principales.
-    """
     raiz_proyecto = Path.cwd()
     carpeta_indicadores = raiz_proyecto / 'resultados' / 'indicadores'
 
@@ -31,7 +21,6 @@ def generar_indicadores(result_dict, table_name=None):
 
     indicadores = {}
 
-    # Toma el primer resultado de validación
     validation_key = next(iter(result_dict))
     validation_data = result_dict[validation_key]
 
@@ -39,13 +28,11 @@ def generar_indicadores(result_dict, table_name=None):
         logger.warning("No se encuentra 'results' en el diccionario.")
         return indicadores
 
-    # Indicadores generales
     total_validaciones = validation_data['statistics']['evaluated_expectations']
     validaciones_exitosas = validation_data['statistics']['successful_expectations']
     validaciones_fallidas = validation_data['statistics']['unsuccessful_expectations']
     porcentaje_exito = validation_data['statistics']['success_percent']
 
-    # Busca el número de filas validadas
     element_count = 0
     for result in validation_data['results']:
         if 'element_count' in result['result']:
@@ -67,7 +54,6 @@ def generar_indicadores(result_dict, table_name=None):
 
             writer.writeheader()
 
-            # Escribe resumen general
             writer.writerow({
                 'Estado': 'Estadísticas Generales',
                 'Expectativa': '',
@@ -77,29 +63,39 @@ def generar_indicadores(result_dict, table_name=None):
                 'Total de Filas': element_count
             })
 
-            # Escribe detalle por expectativa
             for result in validation_data['results']:
                 expectation = result['expectation_config']
                 success = result['success']
                 expectation_name = expectation['meta'].get('name', 'Sin nombre')
                 description = expectation['meta'].get('description', 'Sin descripción')
-                unexpected_count = result['result'].get('unexpected_count')
+                tipo_expectativa = expectation.get('type')
 
-                if unexpected_count is None:
-                    unexpected_count = result['result'].get('observed_value')
-
-                if unexpected_count is None:
-                    unexpected_rows = result['result'].get('details', {}).get('unexpected_rows')
-                    if unexpected_rows is not None:
-                        unexpected_count = len(unexpected_rows)
-
-                if unexpected_count is None:
+                if tipo_expectativa in ['expect_table_columns_to_match_set', 'expect_column_values_to_be_of_type']:
+                    # Estas no son numéricas
                     unexpected_count = 'N/A'
-
-                if isinstance(unexpected_count, int) and element_count > 0:
-                    unexpected_percent = (unexpected_count / element_count) * 100
-                else:
                     unexpected_percent = 'N/A'
+
+                elif tipo_expectativa == 'expect_table_row_count_to_be_between':
+                    # Mostrar el valor observado como recuento
+                    observed_value = result['result'].get('observed_value')
+                    unexpected_count = observed_value if isinstance(observed_value, int) else 'N/A'
+                    unexpected_percent = '100.0' if success else '0.0'
+
+                else:
+                    unexpected_count = result['result'].get('unexpected_count')
+
+                    if unexpected_count is None:
+                        unexpected_rows = result['result'].get('details', {}).get('unexpected_rows')
+                        if unexpected_rows is not None:
+                            unexpected_count = len(unexpected_rows)
+
+                    if unexpected_count is None:
+                        unexpected_count = 'N/A'
+
+                    if isinstance(unexpected_count, int) and element_count > 0:
+                        unexpected_percent = round((unexpected_count / element_count) * 100, 2)
+                    else:
+                        unexpected_percent = 'N/A'
 
                 row = {
                     'Estado': 'Éxito' if success else 'Fallido',
@@ -112,7 +108,7 @@ def generar_indicadores(result_dict, table_name=None):
 
                 writer.writerow(row)
 
-        logger.info(f"CSV de indicadores guardado")
+        logger.info(f"CSV de indicadores guardado: {archivo_path.name}")
     except Exception as e:
         logger.error(f"Error al generar CSV de indicadores: {e}")
 

@@ -1,8 +1,0 @@
-Estado,Expectativa,Descripción,Recuento Inesperados,Porcentaje Inesperado,Total de Filas
-Estadísticas Generales,,"Total de validaciones: 6, Exitosas: 3, Fallidas: 3, Porcentaje de éxito: 50.0%",,,50
-Éxito,Expectativas valor único,Verifica que los valores de `id_cliente` sean únicos.,0,0.0,50
-Fallido,Expectativa Valores por referencia,Verifica que los valores de la columna `cod_municipio` estén en la lista de referencia.,24,48.0,50
-Fallido,Expectativa Valores por referencia,Verifica que los valores de la columna `ciudad` estén en la lista de referencia.,24,48.0,50
-Éxito,Expectativas de Valores con Patrón,Verifica que los valores de `email` coincidan con el patrón `^.*@.*\.com$`.,0,0.0,50
-Éxito,Expectativas de Referencia de Caracteres,Verifica que los valores de `email` comiencen con uno de los prefijos válidos: user.,0,0.0,50
-Fallido,Validación combinaciones múltiples con SQL,"Verifica que las combinaciones de columnas email, ciudad estén en la lista de valores permitidos",47,94.0,50

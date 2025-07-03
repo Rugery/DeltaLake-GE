@@ -6,14 +6,14 @@
       "type": "update_data_docs"
     }
   ],
-  "id": "7270c4c3-84c3-4951-b72a-dc3f02ff0c7f",
+  "id": "7680f51e-2b65-4141-a90f-21ad6dc7fb19",
   "name": "checkpoint_suite_clientes",
   "result_format": {
     "result_format": "COMPLETE"
   },
   "validation_definitions": [
     {
-      "id": "a359ca6c-d74e-40a3-a12a-0d2fc4597e1c",
+      "id": "05605b75-7740-47f4-8d58-46b128addc1d",
       "name": "suite_clientes"
     }
   ]
