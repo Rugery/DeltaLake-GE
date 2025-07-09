@@ -1,6 +1,5 @@
 import great_expectations as gx
 import logging
-from datetime import datetime
 from pyspark.sql import SparkSession
 from delta import configure_spark_with_delta_pip
 from great_expectations.checkpoint import UpdateDataDocsAction

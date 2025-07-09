@@ -4,18 +4,17 @@ import great_expectations as ge
 # Expectativas Comunes GE
 # =========================
 
-def expectativa_valores_por_referencia_caracteres(columna, referencia, caracteres):
+def expectativa_valores_por_referencia_caracteres_con_condicion(condicion, columna, referencia, caracteres):
     """
-    Espera que los valores de una columna comiencen con ciertos caracteres (prefijos) válidos,
-    extraídos de una referencia.
-
+    Espera que los valores de la columna comiencen con uno de los prefijos válidos
+    extraídos de una lista de referencia, considerando solo los primeros 'caracteres' caracteres.
     Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
         columna: Nombre de la columna a validar.
         referencia: DataFrame de referencia con los valores válidos.
-        caracteres: Número de caracteres a tomar como prefijo.
-
+        caracteres: Cantidad de caracteres a considerar del prefijo.
     Retorna:
-        Expectation de tipo ExpectColumnValuesToMatchRegex.
+        Expectation de tipo ExpectColumnValuesToMatchRegex con condición.   
     """
     ref = referencia[columna].dropna().unique().tolist()
     prefijos_cortos = list({str(p)[:caracteres] for p in ref})
@@ -23,11 +22,19 @@ def expectativa_valores_por_referencia_caracteres(columna, referencia, caractere
     return ge.expectations.ExpectColumnValuesToMatchRegex(
         column=columna,
         regex=regex_pattern,
+        row_condition=condicion,
+         condition_parser="great_expectations",
         meta={
-            "name": "Expectativas de Referencia de Caracteres",
-            "description": f"Verifica que los valores de `{columna}` comiencen con uno de los prefijos válidos: {', '.join(prefijos_cortos)}."
+            "name": "Expectativa Valores por Referencia con Prefijos",
+            "description": (
+                f"Si se cumple `{condicion}`, entonces los valores de `{columna}` deben comenzar con uno de los prefijos válidos: "
+                f"{', '.join(prefijos_cortos)}."
+            )   
         },
-        description=f"Verifica que los valores de `{columna}` comiencen con uno de los prefijos válidos: {', '.join(prefijos_cortos)}."
+        description=(
+            f"Si se cumple `{condicion}`, entonces los valores de `{columna}` deben comenzar con uno de los prefijos válidos: "
+            f"{', '.join(prefijos_cortos)}."
+        )   
     )
 
 def expectativa_valor_unico(columna):
@@ -71,14 +78,38 @@ def expectativa_valores_por_referencia(columna, referencia):
         description=f"Verifica que los valores de la columna `{columna}` estén en la lista de referencia."
     )
 
-def expectativa_valores_con_patron(columna, patron):
+def expectativa_valores_por_referencia_caracteres(columna, referencia, caracteres):
     """
-    Espera que los valores de la columna coincidan con un patrón regex.
+    Espera que los valores de una columna comiencen con ciertos caracteres (prefijos) válidos,
+    extraídos de una referencia.
 
     Parámetros:
         columna: Nombre de la columna a validar.
-        patron: Expresión regular a cumplir.
+        referencia: DataFrame de referencia con los valores válidos.
+        caracteres: Número de caracteres a tomar como prefijo.
 
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex.
+    """
+    ref = referencia[columna].dropna().unique().tolist()
+    prefijos_cortos = list({str(p)[:caracteres] for p in ref})
+    regex_pattern = f"^({'|'.join(prefijos_cortos)})"
+    return ge.expectations.ExpectColumnValuesToMatchRegex(
+        column=columna,
+        regex=regex_pattern,
+        meta={
+            "name": "Expectativas de Referencia de Caracteres",
+            "description": f"Verifica que los valores de `{columna}` comiencen con uno de los prefijos válidos: {', '.join(prefijos_cortos)}."
+        },
+        description=f"Verifica que los valores de `{columna}` comiencen con uno de los prefijos válidos: {', '.join(prefijos_cortos)}."
+    )
+
+def expectativa_valores_con_patron(columna, patron):
+    """
+    Espera que los valores de la columna coincidan con un patrón regex.
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        patron: Expresión regular que los valores deben cumplir.
     Retorna:
         Expectation de tipo ExpectColumnValuesToMatchRegex.
     """
@@ -86,25 +117,13 @@ def expectativa_valores_con_patron(columna, patron):
         column=columna,
         regex=patron,
         meta={
-            "name": "Expectativas de Valores con Patrón",
+            "name": "Expectativa Valores con Patrón",
             "description": f"Verifica que los valores de `{columna}` coincidan con el patrón `{patron}`."
         },
         description=f"Verifica que los valores de `{columna}` coincidan con el patrón `{patron}`."
     )
 
-def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separador="|"):
-    """
-    Espera que la combinación de valores de varias columnas esté en una tabla de equivalencias.
-
-    Parámetros:
-        columnas: Lista de nombres de columnas a validar.
-        tabla_equivalencia: DataFrame con las combinaciones válidas.
-        separador: Separador para concatenar los valores.
-
-    Retorna:
-        Expectation personalizada (UnexpectedRowsExpectation).
-    """
-    # Crear la expresión SQL para concatenar columnas, ej: concat_ws('|', col1, col2, col3)
+def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separador="|", condicion=None):
     columnas_concat = f"concat_ws('{separador}', {', '.join(columnas)})"
     tabla_equivalencia_tuplas = list(
         tabla_equivalencia[columnas]
@@ -113,7 +132,6 @@ def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separad
         .itertuples(index=False, name=None)
     )
 
-    # Concatenar cada tupla de valores permitidos usando el mismo separador y envolver en ''
     valores_formateados = []
     for tupla in tabla_equivalencia_tuplas:
         valor_concat = separador.join(str(v) for v in tupla)
@@ -121,23 +139,32 @@ def expectativa_valores_tabla_equivalencia(columnas, tabla_equivalencia, separad
 
     valores_sql = ", ".join(valores_formateados)
 
-    # Consulta SQL para buscar filas que NO estén en los valores permitidos
+    where_clauses = []
+    if condicion:
+        where_clauses.append(condicion)
+    where_clauses.append(f"{columnas_concat} NOT IN ({valores_sql})")
+
+    where_sql = " AND ".join(where_clauses)
+
     sql = f"""
     SELECT *
     FROM {{batch}} AS t
-    WHERE {columnas_concat} NOT IN ({valores_sql})
+    WHERE {where_sql}
     """
+
+    meta_data = {
+        "name": "Validación combinaciones múltiples con SQL",
+        "description": f"Verifica que las combinaciones de columnas {', '.join(columnas)} estén en la lista de valores permitidos",
+        "condicion": condicion
+    }
 
     return ge.expectations.UnexpectedRowsExpectation(
         unexpected_rows_query=sql,
-        meta={
-            "name": "Validación combinaciones múltiples con SQL",
-            "description": f"Verifica que las combinaciones de columnas {', '.join(columnas)} estén en la lista de valores permitidos"
-        },
-        description=f"Verifica que las combinaciones de columnas {', '.join(columnas)} estén en la lista de valores permitidos"
+        meta=meta_data,
+        description=meta_data["description"]
     )
 
-def expectativa_valores_no_nullos(columna):
+def expectativa_valores_no_nulos(columna):
     """
     Espera que los valores de la columna no sean nulos.
 
@@ -275,26 +302,27 @@ def expectativa_combinacion_columnas_unicas(columnas):
         description=f"Verifica que la combinación de columnas {', '.join(columnas)} sea única en todas las filas."
     )
 
-def expectativa_valores_no_coinciden_con_patron(columna, patron):
+# def expectativa_valores_no_coinciden_con_patron(condicion, columna, patron):
     """
     Espera que los valores de la columna no coincidan con un patrón regex.
-
     Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
         columna: Nombre de la columna a validar.
-        patron: Expresión regular que los valores NO deben cumplir.
-
+        patron: Expresión regular que los valores no deben cumplir.
     Retorna:
-        Expectation de tipo ExpectColumnValuesToNotMatchRegex.
+        Expectation de tipo ExpectColumnValuesToNotMatchRegex con condición.
     """
     return ge.expectations.ExpectColumnValuesToNotMatchRegex(
         column=columna,
         regex=patron,
+        row_condition=condicion,
+        condition_parser="great_expectations",
         meta={
-            "name": "Expectativas de Valores No Coinciden con Patrón",
-            "description": f"Verifica que los valores de `{columna}` no coincidan con el patrón `{patron}`."
+            "name": "Expectativa Valores No Coinciden con Patrón",
+            "description": f"Verifica que los valores de `{columna}` no coincidan con el patrón `{patron}` si se cumple la condición `{condicion}`."    
         },
-        description=f"Verifica que los valores de `{columna}` no coincidan con el patrón `{patron}`."
-    )
+        description=f"Verifica que los valores de `{columna}` no coincidan con el patrón `{patron}` si se cumple la condición `{condicion}`."
+    )   
 
 def expectativa_valores_distintos_por_referencia(columna, referencia):
     """
@@ -339,22 +367,6 @@ def expectativa_cantidad_filas_entre(min_valor, max_valor):
         description=f"Verifica que la cantidad de filas esté entre {min_valor} y {max_valor}."
     )
 
-def expectativa_no_valores_null_duplicados_vacios(columna):
-    """
-    Espera que los valores de la columna no sean nulos y no haya duplicados.
-
-    Parámetros:
-        columna: Nombre de la columna a validar.
-
-    Retorna:
-        Expectation de tipo ExpectColumnValuesToNotBeNull y ExpectColumnValuesToBeUnique.
-    """
-    return [
-        expectativa_valores_no_nullos(columna),
-        expectativa_valor_unico(columna),
-        expectativa_valores_no_vacios(columna)
-    ]
-
 def expectativa_valores_no_vacios(columna):
     """
     Espera que los valores de la columna no sean cadenas vacías.
@@ -373,4 +385,163 @@ def expectativa_valores_no_vacios(columna):
             "description": f"Verifica que los valores de `{columna}` no sean cadenas vacías."
         },
         description=f"Verifica que los valores de `{columna}` no sean cadenas vacías."
+    )
+
+def expectativa_con_condicional_y_patron(condicion,columna, patron):
+    """
+    Espera que los valores de una columna cumplan una condición y coincidan con un patrón regex.
+    Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
+        columna: Nombre de la columna a validar.
+        patron: Expresión regular que los valores deben cumplir.
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex con condición.
+    """
+    return ge.expectations.ExpectColumnValuesToMatchRegex(
+        column=columna,
+        regex=patron,
+        condition_parser="great_expectations",
+        row_condition=condicion,
+        meta={
+            "name": "Expectativa con Condicional y Patrón",
+            "description": f"Verifica que los valores de `{columna}` cumplan la condición `{condicion}` y coincidan con el patrón `{patron}`."
+        },
+        description=f"Verifica que los valores de `{columna}` cumplan la condición `{condicion}` y coincidan con el patrón `{patron}`."
+    )
+
+# def expectativa_prefijo_ciudad_para_municipio_8(referencia, columna="ciudad", campo_condicional="cod_municipio"):
+    """
+    Si `cod_municipio == 8`, valida que los primeros 3 caracteres de la columna `ciudad`
+    estén en una lista de prefijos válidos proporcionada por una tabla de referencia.
+
+    Parámetros:
+        referencia: DataFrame de referencia con valores válidos de `ciudad`.
+        columna: Nombre de la columna a validar (default "ciudad").
+        campo_condicional: Campo que activa la condición (default "cod_municipio").
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex con condición.
+    """
+    # Extraer prefijos válidos de la referencia
+    prefijos_validos = list({str(valor)[:3] for valor in referencia[columna].dropna().unique()})
+    patron_regex = f"^({'|'.join(prefijos_validos)})"
+
+    return ge.expectations.ExpectColumnValuesToMatchRegex(
+        column=columna,
+        regex=patron_regex,
+        row_condition=f'col("{campo_condicional}") == 8',
+        condition_parser="great_expectations__experimental__",
+        meta={
+            "name": "Prefijos válidos de ciudad para cod_municipio 8",
+            "description": (
+                f"Si `{campo_condicional}` es 8, entonces `{columna}` debe iniciar con uno de los siguientes "
+                f"prefijos válidos: {', '.join(prefijos_validos)}."
+            )
+        },
+        description=(
+            f"Si `{campo_condicional}` es 8, entonces `{columna}` debe iniciar con uno de los siguientes "
+            f"prefijos válidos: {', '.join(prefijos_validos)}."
+        )
+    )
+
+def expectativa_condicional_tabla_referencia(condicion, columna, referencia):
+    """
+    Espera que los valores de una columna estén en una lista de referencia si se cumple una condición.
+    Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
+        columna: Nombre de la columna a validar.
+        referencia: DataFrame de referencia con los valores válidos.
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToBeInSet con condición.
+    """
+    ref_cod = referencia[columna].dropna().unique().tolist()
+    return ge.expectations.ExpectColumnValuesToBeInSet(
+        column=columna,
+        value_set=ref_cod,
+        row_condition=condicion,
+        condition_parser="great_expectations",
+        meta={
+            "name": "Expectativa Condicional con Tabla de Referencia",
+            "description": f"Verifica que los valores de `{columna}` estén en la lista de referencia si se cumple la condición `{condicion}`."
+        },
+        description=f"Verifica que los valores de `{columna}` estén en la lista de referencia si se cumple la condición `{condicion}`."
+    )
+
+def expectativa_condicional_valores_en_lista(condicion,columna, lista):
+    """
+    Espera que los valores de una columna estén en una lista de valores si se cumple una condición.
+    Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
+        columna: Nombre de la columna a validar.
+        lista: Lista de valores válidos.
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToBeInSet con condición.
+        
+    """
+    return ge.expectations.ExpectColumnValuesToBeInSet(
+        column=columna,
+        value_set=lista,
+        row_condition=condicion,
+        condition_parser="great_expectations",
+        meta={
+            "name": "Expectativa Condicional con Valores en Lista",
+            "description": f"Verifica que los valores de `{columna}` estén en la lista de valores si se cumple la condición `{condicion}`."
+        },
+        description=f"Verifica que los valores de `{columna}` estén en la lista de valores si se cumple la condición `{condicion}`."
+    )
+
+def expectativa_primera_palabra_en_referencia_con_condicion(condicion, columna, referencia):
+    """
+    Espera que la primera palabra de los valores de una columna esté en una lista de referencia
+    si se cumple una condición.
+
+    Parámetros:
+        condicion: Condición a evaluar en formato SQL (ej: 'col("ciudad") == "Ciudad8"').
+        columna: Nombre de la columna a validar.
+        referencia: DataFrame de referencia con los valores válidos.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToMatchRegex con condición.
+    """
+    ref = referencia[columna].dropna().unique().tolist()
+    palabras_validas = list({str(valor).split()[0] for valor in ref})
+    patron_regex = f"^({'|'.join(palabras_validas)})"
+
+    return ge.expectations.ExpectColumnValuesToMatchRegex(
+        column=columna,
+        regex=patron_regex,
+        row_condition=condicion,
+        condition_parser="great_expectations",
+        meta={
+            "name": "Primera palabra en referencia con condición",
+            "description": (
+                f"Si se cumple `{condicion}`, entonces la primera palabra de `{columna}` debe estar en "
+                f"la lista de palabras válidas: {', '.join(palabras_validas)}."
+            )
+        },
+        description=(
+            f"Si se cumple `{condicion}`, entonces la primera palabra de `{columna}` debe estar en "
+            f"la lista de palabras válidas: {', '.join(palabras_validas)}."
+        )
+    )
+
+def expectativa_valores_no_permitidos(columna, valores):
+    """
+    Espera que los valores de la columna no estén en una lista de valores no permitidos.
+
+    Parámetros:
+        columna: Nombre de la columna a validar.
+        valores: Lista de valores no permitidos.
+
+    Retorna:
+        Expectation de tipo ExpectColumnValuesToNotBeInSet.
+    """
+    return ge.expectations.ExpectColumnValuesToNotBeInSet(
+        column=columna,
+        value_set=valores,
+        meta={
+            "name": "Expectativa Valores No Permitidos",
+            "description": f"Verifica que los valores de `{columna}` no estén en la lista de valores no permitidos."
+        },
+        description=f"Verifica que los valores de `{columna}` no estén en la lista de valores no permitidos."
     )
