@@ -1,35 +1,9 @@
-import pandas as pd
 import great_expectations as ge
 
-from expectativas.expectativas_comunes import (
-   expectativa_con_condicional_y_patron,
-   expectativa_condicional_tabla_referencia,
-   expectativa_condicional_valores_en_lista,
-   expectativa_primera_palabra_en_referencia_con_condicion,
-   expectativa_valor_unico,
-   expectativa_valores_con_patron,
-   expectativa_valores_longitud_entre,
-   expectativa_valores_no_nulos,
-   expectativa_valores_no_permitidos,
-   expectativa_valores_no_vacios,
-   expectativa_valores_nulos_con_condicion,
-   expectativa_valores_por_referencia,
-   expectativa_valores_por_referencia_caracteres_con_condicion,
-   expectativa_valores_tabla_equivalencia,
-)
+from expectativas.expectativas_comunes import expectativa_valor_unico
 
-archivo_referencias = "./ref_datos/clientes/referencias_clientes.xlsx"
-archivo_equivalencias = "./ref_datos/clientes/equivalencias_ciudad.xlsx"
-archivo_referencias_comunes =  "./ref_datos/comun/municipio.xlsx"
-
-ref_Municipio = pd.read_excel(archivo_referencias_comunes, sheet_name="cod_municipio")
-ref_nombre = pd.read_excel(archivo_referencias, sheet_name="nombre")
-ref_Ciudad = pd.read_excel(archivo_referencias, sheet_name="ciudad")
-ref_Email = pd.read_excel(archivo_referencias, sheet_name="email")
-ref_ECiudad = pd.read_excel(archivo_equivalencias, sheet_name="municipio_ciudad")
-ref_CiudadDistina = pd.read_excel(archivo_referencias, sheet_name="ciudad_distinta")
-
-def suite_Clientes():
+def suite_nombre():
+    
     def expectativa_apellido_nombre_condicional(NAME1, NAME3, NAME4, condicion_sql=None):
         """
         Valida que NAME1 tenga la estructura 'apellido nombre' concatenando NAME4 y NAME3,
@@ -67,9 +41,12 @@ def suite_Clientes():
             description=f"Validar que {NAME1} tenga la estructura 'apellido nombre' (comas reemplazadas por espacios)" +
                         (f" si {condicion_sql}" if condicion_sql else "")
         )
-
+     
     return [
-        expectativa_valor_unico(columna="id_cliente", name="ID Cliente único"),
-        expectativa_valores_longitud_entre(columna="NAME1", min_valor=1, max_valor=5),
-        expectativa_apellido_nombre_condicional(NAME1="NAME1", NAME3="NAME3", NAME4="NAME4"),
+        expectativa_apellido_nombre_condicional(
+            NAME1="NAME1",
+            NAME3="NAME3",
+            NAME4="NAME4",
+        ),
+        expectativa_valor_unico(columna="id"),
     ]
