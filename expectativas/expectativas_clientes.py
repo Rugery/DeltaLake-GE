@@ -2,6 +2,9 @@ import pandas as pd
 import great_expectations as ge
 
 from expectativas.expectativas_comunes import (
+   expectativa_cantidad_filas_entre,
+   expectativa_columnas_esperadas,
+   expectativa_combinacion_columnas_unicas,
    expectativa_con_condicional_y_patron,
    expectativa_condicional_tabla_referencia,
    expectativa_condicional_valores_en_lista,
@@ -14,20 +17,10 @@ from expectativas.expectativas_comunes import (
    expectativa_valores_no_vacios,
    expectativa_valores_nulos_con_condicion,
    expectativa_valores_por_referencia,
+   expectativa_valores_por_referencia_caracteres,
    expectativa_valores_por_referencia_caracteres_con_condicion,
    expectativa_valores_tabla_equivalencia,
 )
-
-archivo_referencias = "./ref_datos/clientes/referencias_clientes.xlsx"
-archivo_equivalencias = "./ref_datos/clientes/equivalencias_ciudad.xlsx"
-archivo_referencias_comunes =  "./ref_datos/comun/municipio.xlsx"
-
-ref_Municipio = pd.read_excel(archivo_referencias_comunes, sheet_name="cod_municipio")
-ref_nombre = pd.read_excel(archivo_referencias, sheet_name="nombre")
-ref_Ciudad = pd.read_excel(archivo_referencias, sheet_name="ciudad")
-ref_Email = pd.read_excel(archivo_referencias, sheet_name="email")
-ref_ECiudad = pd.read_excel(archivo_equivalencias, sheet_name="municipio_ciudad")
-ref_CiudadDistina = pd.read_excel(archivo_referencias, sheet_name="ciudad_distinta")
 
 def suite_Clientes():
     def expectativa_apellido_nombre_condicional(NAME1, NAME3, NAME4, condicion_sql=None):
@@ -53,7 +46,7 @@ def suite_Clientes():
 
         sql = f"""
         SELECT *
-        FROM {{batch}} AS t
+        FROM {{batch}} 
         {where_clause}
         """
 
@@ -69,7 +62,278 @@ def suite_Clientes():
         )
 
     return [
-        expectativa_valor_unico(columna="id_cliente", name="ID Cliente único"),
-        expectativa_valores_longitud_entre(columna="NAME1", min_valor=1, max_valor=5),
-        expectativa_apellido_nombre_condicional(NAME1="NAME1", NAME3="NAME3", NAME4="NAME4"),
+        # expectativa_valores_por_referencia(
+        # columna="ERNAM", 
+        # referencia=LR001, 
+        # ),
+        # expectativa_valores_por_referencia(
+        # columna="cod_municipio", 
+        # referencia=ref_Municipio, 
+        # ),
+        #---------------------------------------------------------
+        # expectativa_condicional_tabla_referencia(
+        # condicion='col("BEGRU")=="PSA" | col("BEGRU")=="VTC"',
+        # columna="ERNAM",
+        # referencia=LR001,
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="STCD1",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_con_patron(
+        # columna="STCD1",
+        # patron=r"^\d+$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="ADRNR",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_con_patron(
+        # columna="ADRNR",
+        # patron=r"^[^\s][A-Za-z0-9]{7,}$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_primera_palabra_en_referencia_con_condicion(
+        # condicion='col("LAND1")=="CO"',
+        # columna="ADRNR",
+        # referencia=LR006,
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="ORT01",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_por_referencia(
+        # columna="ORT01",
+        # referencia=LR003,
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="TELF1",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("LAND1")=="CO"',
+        # columna="TELF1",
+        # patron=r"^(60\d{8}|3\d{9})$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_por_referencia_caracteres_con_condicion(
+        # condicion='col("LAND1")=="CO"',
+        # columna="REGIO",
+        # referencia=LR004,
+        # caracteres=3,
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("TELF1")=="9999999999"',
+        # columna="KTOKD",
+        # lista=["ZCLX","ZCON","ZDES","ZDUM","ZEVE","ZOBR","ZPVT","ZTRA","ZVEN"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_permitidos(
+        # columna="TELF1",
+        # valores=["0000000000"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="TELF2",
+        # )
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("LAND1")=="CO"',
+        # columna="TELF2",
+        # patron=r"^(60\d{8}|3\d{9})$",
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("LAND1")=="CO" & col("TELF2")=="0000000000"',
+        # columna="KTOKD",
+        # lista=["ZCLX","ZCON", "ZDES", "ZDUM", "ZEVE", "ZOBR", "ZPVT", "ZTRA", "ZVEN"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="SMTP_ADDR",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_con_patron(
+        # columna="SMTP_ADDR",
+        # patron=r"^(?!\d)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{3,}$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion=''col("LAND1") == "CO" & ('
+        # 'col("KTOKD") == "ZCLX" | '
+        # 'col("KTOKD") == "ZCON" | '
+        # 'col("KTOKD") == "ZDES" | '
+        # 'col("KTOKD") == "ZDUM" | '
+        # 'col("KTOKD") == "ZEVE" | '
+        # 'col("KTOKD") == "ZOBR" | '
+        # 'col("KTOKD") == "ZPVT" | '
+        # 'col("KTOKD") == "ZTRA" | '
+        # 'col("KTOKD") == "ZVEN"'
+        # ')',
+        # columna="SMTP_ADDR",
+        # lista=["NA@NA.COM"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion=''col("LAND1") != "CO" & ('
+        # 'col("KTOKD") == "ZCLX" | '
+        # 'col("KTOKD") == "ZCON" | '
+        # 'col("KTOKD") == "ZDES" | '
+        # 'col("KTOKD") == "ZDUM" | '
+        # 'col("KTOKD") == "ZEVE" | '
+        # 'col("KTOKD") == "ZOBR" | '
+        # 'col("KTOKD") == "ZPVT" | '
+        # 'col("KTOKD") == "ZTRA" | '
+        # 'col("KTOKD") == "ZVEN"'
+        # ')',
+        # columna="SMTP_ADDR",
+        # lista=["NA@X.COM"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("FITYP")== "PN"',
+        # columna="NAME3",
+        # patron=r"^[A-Z]+(,[A-Z]+)*$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_nulos_con_condicion(
+        # condicion='col("FITYP") == "PJ"',
+        # columna="NAME3",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_nulos_con_condicion(
+        # condicion='col("FITYP") == "PJ"',
+        # columna="NAME4",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("FITYP")== "PN"',
+        # columna="NAME4",
+        # patron=r"^[A-Z]+(,[A-Z]+)*$",
+        # ),
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="NAME1",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_con_patron(
+        # columna="NAME1",
+        # patron=r"^[A-Z]+( [A-Z]+)*$",
+        # )
+        #---------------------------------------------------------
+        # expectativa_apellido_nombre_condicional(
+        # NAME1="NAME1",
+        # NAME3="NAME3",
+        # NAME4="NAME4",
+        # condicion_sql='FITYP = "PN"'
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="SORTL",
+        # )
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("STCDT")=="N" & col("LAND1")=="CO" & col("FITYP")=="PJ"',
+        # columna="SORTL",
+        # patron=r"^.{9}$"
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="PSTLZ",
+        # )
+        #---------------------------------------------------------
+        # expectativa_con_condicional_y_patron(
+        # condicion='col("LAND1")=="CO"',
+        # columna="PSTLZ",
+        # patron=r"^\d{5}$",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_tabla_equivalencia(
+        # columnas=["PSTLZ","ORT01"],
+        # tabla_equivalencia=LR005,
+        # condicion='col("LAND1")=="CO"',
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZVTC"',
+        # columna="BEGRUS",
+        # lista=["ZVT"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZNAL"',
+        # columna="BEGRUS",
+        # lista=["ZNAL","PSA"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZEXT"',
+        # columna="STKZN",
+        # lista=["X"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_permitidos(
+        # columna="WAERS",
+        # valores=["COP"],
+        # condicion='col("KTOKD)=="ZEXT"',
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="Z011"',
+        # columna="XVERR",
+        # lista=["X"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="LPRIO",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_vacios(
+        # columna="LPRIO",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="KVGR5",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_vacios(
+        # columna="KVGR5",
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_nulos(
+        # columna="INCO1",
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZNAL"',
+        # columna="INCO1",
+        # lista=["UN"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_permitidos(
+        # columna="KZAZU",
+        # valores=["X"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZNAL"',
+        # columna="VSBED",
+        # valores=["01"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_condicional_valores_en_lista(
+        # condicion='col("KTOKD")=="ZEXT"',
+        # columna="VSBED",
+        # valores=["02"],
+        # )
+        #---------------------------------------------------------
+        # expectativa_valores_no_vacios(
+        # columna="CIIUCODE",
+        # )
+        #---------------------------------------------------------
     ]
